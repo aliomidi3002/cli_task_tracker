@@ -3,6 +3,18 @@ import json
 import os
 from datetime import datetime
 
+TASKS_FILE = "tasks.json"
+
+def load_tasks():
+    if not os.path.exists(TASKS_FILE):
+        return []
+    with open(TASKS_FILE, "r") as f:
+        return json.load(f)
+
+def save_tasks(tasks):
+    with open(TASKS_FILE, "w") as f:
+        json.dump(tasks, f, indent=2)
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python task_cli.py <command> [arguments]")
@@ -24,6 +36,10 @@ def main():
         print("list command recognized")
     else:
         print(f"Unknown command: {command}")
+
+    tasks = load_tasks()
+    print(tasks)  # should print []
+    save_tasks(tasks)  # should create tasks.json
 
 if __name__ == "__main__":
     main()
