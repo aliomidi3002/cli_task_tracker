@@ -3,6 +3,8 @@ import json
 import os
 from datetime import datetime
 
+from click import command
+
 TASKS_FILE = "tasks.json"
 
 def load_tasks():
@@ -15,6 +17,39 @@ def save_tasks(tasks):
     with open(TASKS_FILE, "w") as f:
         json.dump(tasks, f, indent=2)
 
+def add_task(description):
+    tasks = load_tasks()
+    
+    new_task = {
+        "id": len(tasks) + 1,
+        "description": description,
+        "status": "todo",
+        "createdAt": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "updatedAt": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    
+    tasks.append(new_task)
+    save_tasks(tasks)
+    print(f"Task added successfully (ID: {new_task['id']})")
+
+
+def list_tasks(status=None):
+    tasks = load_tasks()
+    
+    if not tasks:
+        print("No tasks found.")
+        return
+    
+    filtered = tasks if status is None else [t for t in tasks if t["status"] == status]
+    
+    if not filtered:
+        print(f"No tasks with status: {status}")
+        return
+    
+    for task in filtered:
+        print(f"[{task['id']}] {task['description']} - {task['status']} (created: {task['createdAt']})")
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python task_cli.py <command> [arguments]")
@@ -23,7 +58,11 @@ def main():
     command = sys.argv[1]
 
     if command == "add":
-        print("add command recognized")
+        if len(sys.argv) < 3:
+            print("Usage: python task_cli.py add <description>")
+        else:
+            add_task(sys.argv[2])
+
     elif command == "update":
         print("update command recognized")
     elif command == "delete":
@@ -33,13 +72,13 @@ def main():
     elif command == "mark-done":
         print("mark-done command recognized")
     elif command == "list":
-        print("list command recognized")
+        if len(sys.argv) == 3:
+            list_tasks(sys.argv[2])
+        else:
+            list_tasks()
     else:
         print(f"Unknown command: {command}")
 
-    tasks = load_tasks()
-    print(tasks)  # should print []
-    save_tasks(tasks)  # should create tasks.json
 
 if __name__ == "__main__":
     main()

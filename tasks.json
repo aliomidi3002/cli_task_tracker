@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": 1,
+    "description": "Buy groceries",
+    "status": "todo",
+    "createdAt": "2026-06-08 22:19:37",
+    "updatedAt": "2026-06-08 22:19:37"
+  },
+  {
+    "id": 2,
+    "description": "Read a book",
+    "status": "todo",
+    "createdAt": "2026-06-08 22:19:37",
+    "updatedAt": "2026-06-08 22:19:37"
+  }
+]
