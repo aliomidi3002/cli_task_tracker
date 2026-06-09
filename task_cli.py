@@ -50,6 +50,33 @@ def list_tasks(status=None):
         print(f"[{task['id']}] {task['description']} - {task['status']} (created: {task['createdAt']})")
 
 
+def update_task(task_id, new_description):
+    tasks = load_tasks()
+    
+    for task in tasks:
+        if task["id"] == int(task_id):
+            task["description"] = new_description
+            task["updatedAt"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_tasks(tasks)
+            print(f"Task {task_id} updated successfully.")
+            return
+    
+    print(f"Task {task_id} not found.")
+
+
+def delete_task(task_id):
+    tasks = load_tasks()
+    
+    filtered = [t for t in tasks if t["id"] != int(task_id)]
+    
+    if len(filtered) == len(tasks):
+        print(f"Task {task_id} not found.")
+        return
+    
+    save_tasks(filtered)
+    print(f"Task {task_id} deleted successfully.")
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python task_cli.py <command> [arguments]")
@@ -64,9 +91,17 @@ def main():
             add_task(sys.argv[2])
 
     elif command == "update":
-        print("update command recognized")
+        if len(sys.argv) < 4:
+            print("Usage: python task_cli.py update <id> <description>")
+        else:
+            update_task(sys.argv[2], sys.argv[3])
+
     elif command == "delete":
-        print("delete command recognized")
+        if len(sys.argv) < 3:
+            print("Usage: python task_cli.py delete <id>")
+        else:
+            delete_task(sys.argv[2])
+
     elif command == "mark-in-progress":
         print("mark-in-progress command recognized")
     elif command == "mark-done":
