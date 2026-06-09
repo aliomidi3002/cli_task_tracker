@@ -76,6 +76,18 @@ def delete_task(task_id):
     save_tasks(filtered)
     print(f"Task {task_id} deleted successfully.")
 
+def mark_task(task_id, status):
+    tasks = load_tasks()
+    
+    for task in tasks:
+        if task["id"] == int(task_id):
+            task["status"] = status
+            task["updatedAt"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_tasks(tasks)
+            print(f"Task {task_id} marked as {status}.")
+            return
+    
+    print(f"Task {task_id} not found.")
 
 def main():
     if len(sys.argv) < 2:
@@ -103,9 +115,17 @@ def main():
             delete_task(sys.argv[2])
 
     elif command == "mark-in-progress":
-        print("mark-in-progress command recognized")
+        if len(sys.argv) < 3:
+            print("Usage: python task_cli.py mark-in-progress <id>")
+        else:
+            mark_task(sys.argv[2], "in-progress")
+
     elif command == "mark-done":
-        print("mark-done command recognized")
+        if len(sys.argv) < 3:
+            print("Usage: python task_cli.py mark-done <id>")
+        else:
+            mark_task(sys.argv[2], "done")
+            
     elif command == "list":
         if len(sys.argv) == 3:
             list_tasks(sys.argv[2])
